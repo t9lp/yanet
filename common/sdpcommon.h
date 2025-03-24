@@ -188,12 +188,26 @@ struct DataPlaneInSharedMemory
 
 	void UnmapBuffers(uint64_t size)
 	{
-		if (dataplane_data != nullptr)
+		if (dataplane_data != nullptr && size > 0)
 		{
+			// Check if address is page aligned
+			long page_size = sysconf(_SC_PAGESIZE);
+			if (page_size > 0 && ((uintptr_t)dataplane_data % page_size != 0))
+			{
+				YANET_LOG_ERROR("Error: dataplane_data address %p is not page-aligned (page size: %ld)", dataplane_data, page_size);
+				dataplane_data = nullptr;
+				return;
+			}
+
 			if (munmap(dataplane_data, size) < 0)
 			{
-				YANET_LOG_ERROR("Error munmap %d: %s", errno, strerror(errno));
+				YANET_LOG_ERROR("Error munmap %d: %s (address: %p, size: %lu)", errno, strerror(errno), dataplane_data, size);
 			}
+			dataplane_data = nullptr;
+		}
+		else if (dataplane_data != nullptr && size == 0)
+		{
+			YANET_LOG_ERROR("Error: Attempted to unmap with size 0 (address: %p)", dataplane_data);
 			dataplane_data = nullptr;
 		}
 	}
