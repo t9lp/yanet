@@ -40,7 +40,7 @@ Description: YANET controlling and monitoring utility
 
 Package: yanet-dev
 Architecture: amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${misc:Depends}
 Description: Various development files for YANET integration
 
 Package: yanet-utils
