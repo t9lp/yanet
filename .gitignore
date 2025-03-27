@@ -13,3 +13,7 @@ __pycache__
 report/
 .*
 compile_commands.json
+.buildinfo
+.deb
+.ddeb
+.changes

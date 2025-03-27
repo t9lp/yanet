@@ -12,8 +12,10 @@ libyabird = library('yanet-rib',
                     dependencies: dependencies,
                     install: true)
 
-libyabird_static = static_library('yanet-rib',
-                                  sources,
-                                  include_directories: yanet_rootdir,
-                                  dependencies: dependencies,
-                                  install: true)
+if get_option('default_library') == 'static' or get_option('default_library') == 'both'
+    libyabird_static = static_library('yanet-rib-static',
+                                    sources,
+                                    include_directories: yanet_rootdir,
+                                    dependencies: dependencies,
+                                    install: true)
+endif
